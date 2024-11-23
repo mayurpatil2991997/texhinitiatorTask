@@ -95,7 +95,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     if (value!.isEmpty) {
                       return "Please Enter User Name";
                     } else {
-                      return FormValidate.validateEmail(
+                      return FormValidate.requiredField(
                           value, "Please Enter Valid User Name");
                     }
                   },
