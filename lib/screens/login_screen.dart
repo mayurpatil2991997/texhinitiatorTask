@@ -27,7 +27,6 @@ class _LoginScreenState extends State<LoginScreen> {
         email: _emailController.text,
         password: _passwordController.text,
       );
-      // After successful login, navigate to the HomeScreen with the username
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -44,7 +43,9 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColor.whiteColor,
       appBar: AppBar(
+          backgroundColor: AppColor.whiteColor,
           centerTitle: true,
           title: const Text(
             "Login",

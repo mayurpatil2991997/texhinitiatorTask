@@ -24,18 +24,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   Future<void> _signUp() async {
     try {
-      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+      UserCredential userCredential =
+          await _auth.createUserWithEmailAndPassword(
         email: _emailController.text,
         password: _passwordController.text,
       );
-      await FirebaseFirestore.instance.collection('users').doc(userCredential.user!.uid).set({
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userCredential.user!.uid)
+          .set({
         'username': _usernameController.text,
       });
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) =>
-              LoginScreen(),
+          builder: (context) => LoginScreen(),
         ),
       );
     } catch (e) {
@@ -46,7 +49,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColor.whiteColor,
       appBar: AppBar(
+          backgroundColor: AppColor.whiteColor,
           centerTitle: true,
           title: const Text(
             "Sign Up",
@@ -57,7 +62,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           )),
       body: SingleChildScrollView(
         child: Form(
-          key: formKey,
+            key: formKey,
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -137,8 +142,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  LoginScreen(),
+                              builder: (context) => LoginScreen(),
                             ),
                           );
                         },
@@ -152,8 +156,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                 ],
               ),
-            )
-        ),
+            )),
       ),
     );
   }

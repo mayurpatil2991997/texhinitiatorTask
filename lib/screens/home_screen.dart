@@ -22,27 +22,56 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController _messageController = TextEditingController();
   bool isButtonEnabled = false;
-  void _postMessage() {
+  String? username;
+
+  // Fetch the username from Firestore
+  Future<void> _fetchUsername() async {
+    try {
+      // Get the current user from Firebase Auth
+      User? user = FirebaseAuth.instance.currentUser;
+
+      if (user != null) {
+        DocumentSnapshot doc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+
+        // Check if the username field exists
+        if (doc.exists) {
+          setState(() {
+            username = doc['username'] ?? "No Username"; // Default to "No Username" if not found
+          });
+        }
+      }
+    } catch (e) {
+      print("Error fetching username: $e");
+    }
+  }
+
+  void _postMessage() async {
     if (_messageController.text.isNotEmpty) {
-      FirebaseFirestore.instance.collection('posts').add({
-        'message': _messageController.text,
-        'username': widget.username,
-        'timestamp': FieldValue.serverTimestamp(),
-      });
-      _messageController.clear();
+      try {
+        await FirebaseFirestore.instance.collection('posts').add({
+          'message': _messageController.text,
+          'username': username ?? "Unknown User", // Use fetched username
+          'timestamp': FieldValue.serverTimestamp(),
+        });
+        _messageController.clear();
+      } catch (e) {
+        print("Error posting message: $e");
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Failed to post message")));
+      }
     }
   }
 
   @override
   void initState() {
     super.initState();
+    _fetchUsername();
 
-    // Listen to text changes
     _messageController.addListener(() {
       setState(() {
-        isButtonEnabled = _messageController.text.trim().isNotEmpty;
+        isButtonEnabled = _messageController.text.trim().isNotEmpty; // Button will be enabled if there's text
       });
     });
+
   }
 
   @override
@@ -51,12 +80,15 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColor.whiteColor,
       appBar: AppBar(
-        title: Text('Welcome, ${widget.username}'),
+        backgroundColor: AppColor.whiteColor,
+        centerTitle: true,
+        title: Text('Welcome ${username ?? 'Loading...'}'),
         actions: [
           IconButton(
             icon: const Icon(Icons.exit_to_app),
