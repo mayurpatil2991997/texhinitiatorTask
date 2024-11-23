@@ -1,0 +1,19 @@
+<resources>
+    <!-- Unique identifier for your Firebase app -->
+    <string name="google_app_id">1:702332231950:android:4895d90630815b1816b75f</string>
+
+    <!-- API key used for authenticating requests to Firebase services -->
+    <string name="google_api_key">AIzaSyCSf4_bTIVRPuXd2RIXvZrFor6lfwwu1wk</string>
+
+    <!-- URL of your Firebase Realtime Database (not provided, add this if used) -->
+    <string name="firebase_database_url">https://techinitiator-29f71.firebaseio.com</string>
+
+    <!-- Google Cloud Messaging (GCM) sender ID -->
+    <string name="gcm_defaultSenderId">702332231950</string>
+
+    <!-- OAuth 2.0 client ID (not available in this file) -->
+    <string name="default_web_client_id">YOUR_WEB_CLIENT_ID</string>
+
+    <!-- Firebase project ID -->
+    <string name="project_id">techinitiator-29f71</string>
+</resources>
