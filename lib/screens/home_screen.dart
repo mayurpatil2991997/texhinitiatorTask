@@ -23,6 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController _messageController = TextEditingController();
   bool isButtonEnabled = false;
   String? username;
+  int totalPosts = 0;
 
   // Fetch the username from Firestore
   Future<void> _fetchUsername() async {
@@ -61,10 +62,26 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  Future<void> getTotalPostCount() async {
+    try {
+      final snapshot = await FirebaseFirestore.instance
+          .collection('posts')
+          .where('username', isEqualTo: widget.username)
+          .get();
+
+      setState(() {
+        totalPosts = snapshot.docs.length;  // Set the total post count
+      });
+    } catch (e) {
+      print("Error fetching posts: $e");
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     _fetchUsername();
+    getTotalPostCount();
 
     _messageController.addListener(() {
       setState(() {
@@ -122,6 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
           horizontal: 3.w
         ),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
               height: 5.h,
@@ -144,6 +162,32 @@ class _HomeScreenState extends State<HomeScreen> {
             ) : const SizedBox(),
             SizedBox(
               height: 2.h,
+            ),
+            Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(
+                    text: 'Total ',
+                    style: AppTextStyle.mediumText,
+                  ),
+                  TextSpan(
+                      text: totalPosts.toString(),
+                      style: AppTextStyle.mediumText.copyWith(
+                        color: AppColor.primaryColor,
+                      )
+                  ),
+                  TextSpan(
+                    text: " Posts of ",
+                    style: AppTextStyle.mediumText,
+                  ),
+                  TextSpan(
+                    text: username,
+                      style: AppTextStyle.mediumText.copyWith(
+                        color: AppColor.primaryColor,
+                      )
+                  ),
+                ],
+              ),
             ),
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
