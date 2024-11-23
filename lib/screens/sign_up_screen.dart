@@ -20,7 +20,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
         email: _emailController.text,
         password: _passwordController.text,
       );
-      // Store the username in Firestore after sign-up
       await FirebaseFirestore.instance.collection('users').doc(userCredential.user!.uid).set({
         'username': _usernameController.text,
       });

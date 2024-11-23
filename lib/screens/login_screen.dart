@@ -1,7 +1,14 @@
 // login_screen.dart
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'home_screen.dart'; // Import the home screen for after login
+import 'package:sizer/sizer.dart';
+import 'package:tech_initiator/Themes/app_colors_theme.dart';
+import 'package:tech_initiator/Themes/app_text_theme.dart';
+import 'package:tech_initiator/Utils/form_validate.dart';
+import 'package:tech_initiator/screens/sign_up_screen.dart';
+import 'package:tech_initiator/widgets/button_widget.dart';
+import 'package:tech_initiator/widgets/custom_text_field.dart';
+import 'home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -12,6 +19,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final formKey = GlobalKey<FormState>();
 
   Future<void> _login() async {
     try {
@@ -23,7 +31,8 @@ class _LoginScreenState extends State<LoginScreen> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => HomeScreen(username: userCredential.user!.email!),
+          builder: (context) =>
+              HomeScreen(username: userCredential.user!.email!),
         ),
       );
     } catch (e) {
@@ -35,26 +44,95 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Login")),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: _emailController,
-              decoration: InputDecoration(labelText: 'Email'),
+      appBar: AppBar(
+          centerTitle: true,
+          title: const Text(
+            "Login",
+            style: TextStyle(
+              fontSize: 22,
+              color: Colors.black,
             ),
-            TextField(
-              controller: _passwordController,
-              obscureText: true,
-              decoration: InputDecoration(labelText: 'Password'),
+          )),
+      body: Form(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                CustomTextField(
+                  hintText: "Enter Email",
+                  controller: _emailController,
+                  keyboardType: null,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return "Please Enter Email";
+                    } else {
+                      return FormValidate.validateEmail(
+                          value, "Please Enter Valid Email");
+                    }
+                  },
+                ),
+                SizedBox(
+                  height: 2.h,
+                ),
+                CustomTextField(
+                  hintText: "Enter Password",
+                  controller: _passwordController,
+                  keyboardType: null,
+                  obscureText: true,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return "Please Enter Password";
+                    } else {
+                      return FormValidate.validateEmail(
+                          value, "Please Enter Valid Password");
+                    }
+                  },
+                ),
+                SizedBox(
+                  height: 10.h,
+                ),
+                ButtonWidget(
+                  onTap: () {
+                    if (formKey.currentState?.validate() ?? false) {
+                      _login();
+                    }
+                  },
+                  text: "Login",
+                  textStyle: AppTextStyle.mediumText
+                      .copyWith(color: AppColor.whiteColor, fontSize: 16),
+                ),
+                SizedBox(
+                  height: 2.h,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Don't have an account? ",
+                      style: AppTextStyle.mediumText
+                          .copyWith(fontSize: 14, color: AppColor.blackColor),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                SignUpScreen(),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        "Sign Up",
+                        style: AppTextStyle.semiBoldText.copyWith(
+                            fontSize: 14, color: AppColor.primaryColor),
+                      ),
+                    )
+                  ],
+                )
+              ],
             ),
-            ElevatedButton(
-              onPressed: _login,
-              child: Text('Login'),
-            ),
-          ],
-        ),
+          ),
       ),
     );
   }
