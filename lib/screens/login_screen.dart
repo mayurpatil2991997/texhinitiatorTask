@@ -54,6 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           )),
       body: Form(
+        key: formKey,
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -83,7 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     if (value!.isEmpty) {
                       return "Please Enter Password";
                     } else {
-                      return FormValidate.validateEmail(
+                      return FormValidate.validatePassword(
                           value, "Please Enter Valid Password");
                     }
                   },

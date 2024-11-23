@@ -2,6 +2,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:sizer/sizer.dart';
+import 'package:tech_initiator/Themes/app_colors_theme.dart';
+import 'package:tech_initiator/Themes/app_text_theme.dart';
+import 'package:tech_initiator/Utils/form_validate.dart';
+import 'package:tech_initiator/screens/login_screen.dart';
+import 'package:tech_initiator/widgets/button_widget.dart';
+import 'package:tech_initiator/widgets/custom_text_field.dart';
 
 class SignUpScreen extends StatefulWidget {
   @override
@@ -13,6 +20,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _passwordController = TextEditingController();
   final _usernameController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final formKey = GlobalKey<FormState>();
 
   Future<void> _signUp() async {
     try {
@@ -31,30 +39,112 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Sign Up")),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: _emailController,
-              decoration: InputDecoration(labelText: 'Email'),
+      appBar: AppBar(
+          centerTitle: true,
+          title: const Text(
+            "Sign Up",
+            style: TextStyle(
+              fontSize: 22,
+              color: Colors.black,
             ),
-            TextField(
-              controller: _passwordController,
-              obscureText: true,
-              decoration: InputDecoration(labelText: 'Password'),
+          )),
+      body: Form(
+        key: formKey,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                CustomTextField(
+                  hintText: "Enter Email",
+                  controller: _emailController,
+                  keyboardType: null,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return "Please Enter Email";
+                    } else {
+                      return FormValidate.validateEmail(
+                          value, "Please Enter Valid Email");
+                    }
+                  },
+                ),
+                SizedBox(
+                  height: 2.h,
+                ),
+                CustomTextField(
+                  hintText: "Enter Password",
+                  controller: _passwordController,
+                  keyboardType: null,
+                  obscureText: true,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return "Please Enter Password";
+                    } else {
+                      return FormValidate.validateEmail(
+                          value, "Please Enter Valid Password");
+                    }
+                  },
+                ),
+                SizedBox(
+                  height: 2.h,
+                ),
+                CustomTextField(
+                  hintText: "Enter User Name",
+                  controller: _usernameController,
+                  keyboardType: null,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return "Please Enter User Name";
+                    } else {
+                      return FormValidate.validateEmail(
+                          value, "Please Enter Valid User Name");
+                    }
+                  },
+                ),
+                SizedBox(
+                  height: 10.h,
+                ),
+                ButtonWidget(
+                  onTap: () {
+                    if (formKey.currentState?.validate() ?? false) {
+                      _signUp();
+                    }
+                  },
+                  text: "Sign Up",
+                  textStyle: AppTextStyle.mediumText
+                      .copyWith(color: AppColor.whiteColor, fontSize: 16),
+                ),
+                SizedBox(
+                  height: 2.h,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Already have an account? ",
+                      style: AppTextStyle.mediumText
+                          .copyWith(fontSize: 14, color: AppColor.blackColor),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                LoginScreen(),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        "Sign In",
+                        style: AppTextStyle.semiBoldText.copyWith(
+                            fontSize: 14, color: AppColor.primaryColor),
+                      ),
+                    )
+                  ],
+                ),
+              ],
             ),
-            TextField(
-              controller: _usernameController,
-              decoration: InputDecoration(labelText: 'Username'),
-            ),
-            ElevatedButton(
-              onPressed: _signUp,
-              child: Text('Sign Up'),
-            ),
-          ],
-        ),
+          )
       ),
     );
   }
