@@ -21,7 +21,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController _messageController = TextEditingController();
-  final formKey = GlobalKey<FormState>();
+  bool isButtonEnabled = false;
   void _postMessage() {
     if (_messageController.text.isNotEmpty) {
       FirebaseFirestore.instance.collection('posts').add({
@@ -31,6 +31,24 @@ class _HomeScreenState extends State<HomeScreen> {
       });
       _messageController.clear();
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Listen to text changes
+    _messageController.addListener(() {
+      setState(() {
+        isButtonEnabled = _messageController.text.trim().isNotEmpty;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _messageController.dispose();
+    super.dispose();
   }
 
   @override
@@ -51,79 +69,66 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: Form(
-        key: formKey,
-          child: Padding(
-            padding:  EdgeInsets.symmetric(
-              horizontal: 3.w
+      body: Padding(
+        padding:  EdgeInsets.symmetric(
+          horizontal: 3.w
+        ),
+        child: Column(
+          children: [
+            SizedBox(
+              height: 5.h,
             ),
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 5.h,
-                ),
-                CustomTextField(
-                  hintText: "Type your post here",
-                  controller: _messageController,
-                  keyboardType: null,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return "Please Enter Message";
-                    } else {
-                      return FormValidate.requiredField(
-                          value, "Please Enter Valid Message");
-                    }
-                  },
-                ),
-                SizedBox(
-                  height: 5.h,
-                ),
-                ButtonWidget(
-                  onTap: () {
-                    if (formKey.currentState?.validate() ?? false) {
-                      _postMessage();
-                    }
-                  },
-                  text: "Post",
-                  textStyle: AppTextStyle.mediumText
-                      .copyWith(color: AppColor.whiteColor, fontSize: 16),
-                ),
-                SizedBox(
-                  height: 2.h,
-                ),
-                Expanded(
-                  child: StreamBuilder<QuerySnapshot>(
-                    stream: FirebaseFirestore.instance
-                        .collection('posts')
-                        .orderBy('timestamp', descending: true)
-                        .snapshots(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(child: CircularProgressIndicator());
-                      }
+            CustomTextField(
+              hintText: "Type your post here",
+              controller: _messageController,
+              keyboardType: null,
+            ),
+            SizedBox(
+              height: 5.h,
+            ),
+            isButtonEnabled ? ButtonWidget(
+              onTap: () {
+                  _postMessage();
+              },
+              text: "Post",
+              textStyle: AppTextStyle.mediumText
+                  .copyWith(color: AppColor.whiteColor, fontSize: 16),
+            ) : SizedBox(),
+            SizedBox(
+              height: 2.h,
+            ),
+            Expanded(
+              child: StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection('posts')
+                    .orderBy('timestamp', descending: true)
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
 
-                      if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                        return const Center(child: Text('No posts yet.'));
-                      }
+                  if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                    return const Center(child: Text('No posts yet.'));
+                  }
 
-                      final posts = snapshot.data!.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
+                  final posts = snapshot.data!.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
 
-                      return ListView.builder(
-                        itemCount: posts.length,
-                        itemBuilder: (context, index) {
-                          final post = posts[index];
-                          return ListTile(
-                            title: Text(post['message']),
-                            subtitle: Text(post['username']),
-                          );
-                        },
+                  return ListView.builder(
+                    itemCount: posts.length,
+                    itemBuilder: (context, index) {
+                      final post = posts[index];
+                      return ListTile(
+                        title: Text(post['message']),
+                        subtitle: Text(post['username']),
                       );
                     },
-                  ),
-                ),
-              ],
+                  );
+                },
+              ),
             ),
-          ),
+          ],
+        ),
       ),
     );
   }
