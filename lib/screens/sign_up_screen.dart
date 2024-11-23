@@ -31,6 +31,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
       await FirebaseFirestore.instance.collection('users').doc(userCredential.user!.uid).set({
         'username': _usernameController.text,
       });
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) =>
+              LoginScreen(),
+        ),
+      );
     } catch (e) {
       print("Sign-up error: $e");
     }
@@ -48,103 +55,105 @@ class _SignUpScreenState extends State<SignUpScreen> {
               color: Colors.black,
             ),
           )),
-      body: Form(
-        key: formKey,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                CustomTextField(
-                  hintText: "Enter Email",
-                  controller: _emailController,
-                  keyboardType: null,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return "Please Enter Email";
-                    } else {
-                      return FormValidate.validateEmail(
-                          value, "Please Enter Valid Email");
-                    }
-                  },
-                ),
-                SizedBox(
-                  height: 2.h,
-                ),
-                CustomTextField(
-                  hintText: "Enter Password",
-                  controller: _passwordController,
-                  keyboardType: null,
-                  obscureText: true,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return "Please Enter Password";
-                    } else {
-                      return FormValidate.validateEmail(
-                          value, "Please Enter Valid Password");
-                    }
-                  },
-                ),
-                SizedBox(
-                  height: 2.h,
-                ),
-                CustomTextField(
-                  hintText: "Enter User Name",
-                  controller: _usernameController,
-                  keyboardType: null,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return "Please Enter User Name";
-                    } else {
-                      return FormValidate.requiredField(
-                          value, "Please Enter Valid User Name");
-                    }
-                  },
-                ),
-                SizedBox(
-                  height: 10.h,
-                ),
-                ButtonWidget(
-                  onTap: () {
-                    if (formKey.currentState?.validate() ?? false) {
-                      _signUp();
-                    }
-                  },
-                  text: "Sign Up",
-                  textStyle: AppTextStyle.mediumText
-                      .copyWith(color: AppColor.whiteColor, fontSize: 16),
-                ),
-                SizedBox(
-                  height: 2.h,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Already have an account? ",
-                      style: AppTextStyle.mediumText
-                          .copyWith(fontSize: 14, color: AppColor.blackColor),
-                    ),
-                    InkWell(
-                      onTap: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                LoginScreen(),
-                          ),
-                        );
-                      },
-                      child: Text(
-                        "Sign In",
-                        style: AppTextStyle.semiBoldText.copyWith(
-                            fontSize: 14, color: AppColor.primaryColor),
+      body: SingleChildScrollView(
+        child: Form(
+          key: formKey,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  CustomTextField(
+                    hintText: "Enter Email",
+                    controller: _emailController,
+                    keyboardType: null,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return "Please Enter Email";
+                      } else {
+                        return FormValidate.validateEmail(
+                            value, "Please Enter Valid Email");
+                      }
+                    },
+                  ),
+                  SizedBox(
+                    height: 2.h,
+                  ),
+                  CustomTextField(
+                    hintText: "Enter Password",
+                    controller: _passwordController,
+                    keyboardType: null,
+                    obscureText: true,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return "Please Enter Password";
+                      } else {
+                        return FormValidate.validatePassword(
+                            value, "Please Enter Valid Password");
+                      }
+                    },
+                  ),
+                  SizedBox(
+                    height: 2.h,
+                  ),
+                  CustomTextField(
+                    hintText: "Enter User Name",
+                    controller: _usernameController,
+                    keyboardType: null,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return "Please Enter User Name";
+                      } else {
+                        return FormValidate.requiredField(
+                            value, "Please Enter Valid User Name");
+                      }
+                    },
+                  ),
+                  SizedBox(
+                    height: 10.h,
+                  ),
+                  ButtonWidget(
+                    onTap: () {
+                      if (formKey.currentState?.validate() ?? false) {
+                        _signUp();
+                      }
+                    },
+                    text: "Sign Up",
+                    textStyle: AppTextStyle.mediumText
+                        .copyWith(color: AppColor.whiteColor, fontSize: 16),
+                  ),
+                  SizedBox(
+                    height: 2.h,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Already have an account? ",
+                        style: AppTextStyle.mediumText
+                            .copyWith(fontSize: 14, color: AppColor.blackColor),
                       ),
-                    )
-                  ],
-                ),
-              ],
-            ),
-          )
+                      InkWell(
+                        onTap: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  LoginScreen(),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          "Sign In",
+                          style: AppTextStyle.semiBoldText.copyWith(
+                              fontSize: 14, color: AppColor.primaryColor),
+                        ),
+                      )
+                    ],
+                  ),
+                ],
+              ),
+            )
+        ),
       ),
     );
   }
