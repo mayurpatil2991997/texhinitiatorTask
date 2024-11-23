@@ -54,6 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColor.whiteColor,
       appBar: AppBar(
         title: Text('Welcome, ${widget.username}'),
         actions: [
@@ -93,7 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
               text: "Post",
               textStyle: AppTextStyle.mediumText
                   .copyWith(color: AppColor.whiteColor, fontSize: 16),
-            ) : SizedBox(),
+            ) : const SizedBox(),
             SizedBox(
               height: 2.h,
             ),
@@ -118,9 +119,33 @@ class _HomeScreenState extends State<HomeScreen> {
                     itemCount: posts.length,
                     itemBuilder: (context, index) {
                       final post = posts[index];
-                      return ListTile(
-                        title: Text(post['message']),
-                        subtitle: Text(post['username']),
+                      var timestamp = post['timestamp'] != null
+                          ? (post['timestamp'] as Timestamp).toDate()
+                          : null;
+
+                      String formattedDate = timestamp != null
+                          ? "${timestamp.day}-${timestamp.month}-${timestamp.year}"
+                          : "No Date";
+                      return Container(
+                        margin: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: AppColor.whiteColor,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: AppColor.greyColor
+                          ),
+
+                        ),
+                        child: ListTile(
+                          title: Text(post['message']),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(post['username']),
+                              Text(formattedDate),
+                            ],
+                          ),
+                        ),
                       );
                     },
                   );

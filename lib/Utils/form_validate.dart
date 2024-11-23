@@ -34,7 +34,7 @@ class FormValidate {
     if (password.isEmpty) {
       return errorMsg;
     }
-    if (password.length < 8) {
+    if (password.length < 4) {
       return errorMsg;
     }
     return null;
