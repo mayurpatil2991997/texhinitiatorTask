@@ -56,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
         _messageController.clear();
       } catch (e) {
         print("Error posting message: $e");
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Failed to post message")));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Failed to post message")));
       }
     }
   }
@@ -88,7 +88,22 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         backgroundColor: AppColor.whiteColor,
         centerTitle: true,
-        title: Text('Welcome ${username ?? 'Loading...'}'),
+        title: Text.rich(
+          TextSpan(
+            children: [
+              TextSpan(
+                text: 'Welcome ',
+                style: AppTextStyle.mediumText,
+              ),
+              TextSpan(
+                text: username ?? 'Loading...',
+                style: const TextStyle(
+                  color: AppColor.primaryColor,
+                ),
+              ),
+            ],
+          ),
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.exit_to_app),
