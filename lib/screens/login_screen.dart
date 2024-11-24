@@ -16,16 +16,16 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final formKey = GlobalKey<FormState>();
 
-  Future<void> _login() async {
+  Future<void> login() async {
     try {
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
+        email: emailController.text,
+        password: passwordController.text,
       );
       Navigator.pushReplacement(
         context,
@@ -62,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 CustomTextField(
                   hintText: "Enter Email",
-                  controller: _emailController,
+                  controller: emailController,
                   keyboardType: null,
                   validator: (value) {
                     if (value!.isEmpty) {
@@ -78,7 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 CustomTextField(
                   hintText: "Enter Password",
-                  controller: _passwordController,
+                  controller: passwordController,
                   keyboardType: null,
                   obscureText: true,
                   validator: (value) {
@@ -96,7 +96,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ButtonWidget(
                   onTap: () {
                     if (formKey.currentState?.validate() ?? false) {
-                      _login();
+                      login();
                     }
                   },
                   text: "Login",

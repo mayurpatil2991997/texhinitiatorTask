@@ -20,12 +20,11 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final TextEditingController _messageController = TextEditingController();
+  final TextEditingController messageController = TextEditingController();
   bool isButtonEnabled = false;
   String? username;
   int totalPosts = 0;
 
-  // Fetch the username from Firestore
   Future<void> _fetchUsername() async {
     try {
       // Get the current user from Firebase Auth
@@ -47,14 +46,14 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _postMessage() async {
-    if (_messageController.text.isNotEmpty) {
+    if (messageController.text.isNotEmpty) {
       try {
         await FirebaseFirestore.instance.collection('posts').add({
-          'message': _messageController.text,
+          'message': messageController.text,
           'username': username ?? "Unknown User", // Use fetched username
           'timestamp': FieldValue.serverTimestamp(),
         });
-        _messageController.clear();
+        messageController.clear();
       } catch (e) {
         print("Error posting message: $e");
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Failed to post message")));
@@ -83,9 +82,9 @@ class _HomeScreenState extends State<HomeScreen> {
     _fetchUsername();
     getTotalPostCount();
 
-    _messageController.addListener(() {
+    messageController.addListener(() {
       setState(() {
-        isButtonEnabled = _messageController.text.trim().isNotEmpty; // Button will be enabled if there's text
+        isButtonEnabled = messageController.text.trim().isNotEmpty; // Button will be enabled if there's text
       });
     });
 
@@ -93,7 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void dispose() {
-    _messageController.dispose();
+    messageController.dispose();
     super.dispose();
   }
 
@@ -146,7 +145,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             CustomTextField(
               hintText: "Type your post here",
-              controller: _messageController,
+              controller: messageController,
               keyboardType: null,
             ),
             SizedBox(

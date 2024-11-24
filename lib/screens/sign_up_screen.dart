@@ -16,9 +16,9 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _usernameController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final usernameController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final formKey = GlobalKey<FormState>();
 
@@ -26,14 +26,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
     try {
       UserCredential userCredential =
           await _auth.createUserWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
+        email: emailController.text,
+        password: passwordController.text,
       );
       await FirebaseFirestore.instance
           .collection('users')
           .doc(userCredential.user!.uid)
           .set({
-        'username': _usernameController.text,
+        'username': usernameController.text,
       });
       Navigator.pushReplacement(
         context,
@@ -69,7 +69,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 children: [
                   CustomTextField(
                     hintText: "Enter Email",
-                    controller: _emailController,
+                    controller: emailController,
                     keyboardType: null,
                     validator: (value) {
                       if (value!.isEmpty) {
@@ -85,7 +85,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                   CustomTextField(
                     hintText: "Enter Password",
-                    controller: _passwordController,
+                    controller: passwordController,
                     keyboardType: null,
                     obscureText: true,
                     validator: (value) {
@@ -102,7 +102,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                   CustomTextField(
                     hintText: "Enter User Name",
-                    controller: _usernameController,
+                    controller: usernameController,
                     keyboardType: null,
                     validator: (value) {
                       if (value!.isEmpty) {
