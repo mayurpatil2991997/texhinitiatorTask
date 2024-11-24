@@ -25,7 +25,9 @@ class _HomeScreenState extends State<HomeScreen> {
   String? username;
   int totalPosts = 0;
 
-  Future<void> _fetchUsername() async {
+
+  // Fetch UserName Function
+  Future<void> fetchUsername() async {
     try {
       // Get the current user from Firebase Auth
       User? user = FirebaseAuth.instance.currentUser;
@@ -45,7 +47,9 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  void _postMessage() async {
+
+  // PostMessage Function
+  void postMessage() async {
     if (messageController.text.isNotEmpty) {
       try {
         await FirebaseFirestore.instance.collection('posts').add({
@@ -61,6 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  //Total Post Count Function
   Future<void> getTotalPostCount() async {
     try {
       final snapshot = await FirebaseFirestore.instance
@@ -79,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _fetchUsername();
+    fetchUsername();
     getTotalPostCount();
 
     messageController.addListener(() {
@@ -96,7 +101,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
-
+// HomeScreen UI
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -143,6 +148,7 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(
               height: 5.h,
             ),
+            // Custom textField
             CustomTextField(
               hintText: "Type your post here",
               controller: messageController,
@@ -151,9 +157,10 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(
               height: 5.h,
             ),
+            // Custom Button Widget
             isButtonEnabled ? ButtonWidget(
               onTap: () {
-                  _postMessage();
+                  postMessage();
               },
               text: "Post",
               textStyle: AppTextStyle.mediumText
@@ -188,6 +195,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
+
+            // Post List UI
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
                 stream: FirebaseFirestore.instance

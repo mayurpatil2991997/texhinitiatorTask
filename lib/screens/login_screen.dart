@@ -21,6 +21,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final formKey = GlobalKey<FormState>();
 
+
+  // Login Function
   Future<void> login() async {
     try {
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
@@ -40,6 +42,8 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+
+  // Login UI
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,6 +64,8 @@ class _LoginScreenState extends State<LoginScreen> {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
+
+                // Custom TextField
                 CustomTextField(
                   hintText: "Enter Email",
                   controller: emailController,
@@ -93,6 +99,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 SizedBox(
                   height: 10.h,
                 ),
+
+                // Custom Button Widget
                 ButtonWidget(
                   onTap: () {
                     if (formKey.currentState?.validate() ?? false) {

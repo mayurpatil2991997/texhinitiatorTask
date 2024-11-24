@@ -22,7 +22,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final formKey = GlobalKey<FormState>();
 
-  Future<void> _signUp() async {
+
+  // SignUp Function
+  Future<void> signUp() async {
     try {
       UserCredential userCredential =
           await _auth.createUserWithEmailAndPassword(
@@ -46,6 +48,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
   }
 
+
+  // SignUp UI
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,6 +71,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
+                  // Custom TextField
                   CustomTextField(
                     hintText: "Enter Email",
                     controller: emailController,
@@ -116,10 +121,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   SizedBox(
                     height: 10.h,
                   ),
+                  // Custom Button Widget
                   ButtonWidget(
                     onTap: () {
                       if (formKey.currentState?.validate() ?? false) {
-                        _signUp();
+                        signUp();
                       }
                     },
                     text: "Sign Up",
